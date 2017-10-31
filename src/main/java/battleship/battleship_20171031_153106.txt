@@ -1,0 +1,6 @@
+ERROR - 15:31:06: java.io.FileNotFoundException: /Battleship/target/classes/META-INF/maven/battleShip/battleShip/pom.properties (No such file or directory)
+ERROR - 15:31:06: java.io.FileNotFoundException: /Battleship/target/classes/META-INF/maven/battleShip/battleShip/pom.properties (No such file or directory)
+ERROR - 15:31:14: java.net.MalformedURLException: unknown protocol: pathmap
+WARNING - 15:33:39: Convert battleship
+WARNING - 15:33:39: First conversion pass
+ERROR - 15:33:39: java.net.MalformedURLException: unknown protocol: pathmap

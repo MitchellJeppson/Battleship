@@ -1,0 +1,13 @@
+WARNING - 15:28:57: First conversion pass
+ERROR - 15:28:57: java.net.MalformedURLException: unknown protocol: pathmap
+WARNING - 15:30:36: Convert battleship
+WARNING - 15:30:36: First conversion pass
+ERROR - 15:30:36: java.net.MalformedURLException: unknown protocol: pathmap
+ERROR - 15:30:52: java.io.FileNotFoundException: /hangman5/bin/src/.DS_Store (No such file or directory)
+ERROR - 15:30:52: java.io.FileNotFoundException: /hangman5/bin/src/.DS_Store (No such file or directory)
+ERROR - 15:31:06: java.io.FileNotFoundException: /Battleship/target/classes/META-INF/maven/battleShip/battleShip/pom.properties (No such file or directory)
+ERROR - 15:31:06: java.io.FileNotFoundException: /Battleship/target/classes/META-INF/maven/battleShip/battleShip/pom.properties (No such file or directory)
+ERROR - 15:31:14: java.net.MalformedURLException: unknown protocol: pathmap
+WARNING - 15:33:39: Convert battleship
+WARNING - 15:33:39: First conversion pass
+ERROR - 15:33:39: java.net.MalformedURLException: unknown protocol: pathmap
