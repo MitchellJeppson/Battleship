@@ -7,11 +7,12 @@ import java.util.Scanner;
 
 
 public class BattleshipGame {
-	private BattleshipBoard board1;
-	private BattleshipBoard board2;
-	private BattleshipBoard[] boards = new BattleshipBoard[2];
+	private Board board1;
+	private Board board2;
+	private Board[] boards = new Board[2];
 	private Scanner in = new Scanner(System.in);
-
+	private static BattleshipFactory shipFactory = BattleshipFactory.instance();
+	
 	public void startGame(){
 		int ans = -1;
 		while(ans < 0){
@@ -42,8 +43,8 @@ public class BattleshipGame {
 	}
 
 	private void playDefault(){
-		this.board1 = new BattleshipBoard();
-		this.board2 = new BattleshipBoard();
+		this.board1 = new Board();
+		this.board2 = new Board();
 		boards[0] = this.board1;
 		boards[1] = this.board2;
 		addDefaultShips();
@@ -53,23 +54,32 @@ public class BattleshipGame {
 	private void addDefaultShips(){
 		Random rand = new Random();
 		int[] sizes = new int[3];
+		String[] types = new String[3];
 		for(int i = 0; i < 3; i++){
-			sizes[i] = rand.nextInt(3)+1; 
+			sizes[i] = rand.nextInt(3)+1;
+			types[i] = ((sizes[i] == 1?"Frigate":(sizes[i] == 2?"Destroyer":"Battlecruiser")));
+			System.out.println(types[i]);
 		}
 
 		for(int b = 0; b < 2; b++){
 			for(int i = 0; i < 3; i++){
 				boolean isVertical = rand.nextBoolean();
+				System.out.println("is Vertical: "+isVertical);
 				Coordinate coo;
 				if(isVertical){
 					coo = new Coordinate(rand.nextInt(boards[b].getColumns()), boards[b].getRows()-sizes[i]);
 				}
 				else{
 					coo = new Coordinate(rand.nextInt(boards[b].getColumns()-sizes[i]), rand.nextInt(boards[b].getRows()));
-				}	
-				if(!boards[b].addShip(new Ship(sizes[i], isVertical, coo))){
+				}
+				
+				Ship ship = (Ship) shipFactory.createProduct(types[i]);
+				ship.setIsVertical(isVertical);
+				ship.setCoordinate(coo);
+				if(!boards[b].addShip(ship)){
 					i--;
 				}
+				System.out.println(coo);
 			}
 			boards[b].showSetupBoard();
 		}
@@ -77,7 +87,6 @@ public class BattleshipGame {
 		
 		
 	}
-
 
 	private void playCustom(){
 		while(true){
@@ -87,8 +96,8 @@ public class BattleshipGame {
 				System.out.println("Please enter the number of rows for your board:\n");
 				int rows = in.nextInt();
 				if(rows > 0 && rows < 11 && columns > 0 && columns < 11){
-					this.board1 = new BattleshipBoard(columns, rows);
-					this.board2 = new BattleshipBoard(columns, rows);
+					this.board1 = new Board(columns, rows);
+					this.board2 = new Board(columns, rows);
 					boards[0] = this.board1;
 					boards[1] = this.board2;
 					break;
@@ -120,16 +129,22 @@ public class BattleshipGame {
 				System.out.println("Please enter an integer number.");
 			}
 		}
-
-		int[] shipLengths = new int[numShips];
-
+		Ship[] ships1 = new Ship[numShips];
+		Ship[] ships2 = new Ship[numShips];
 		for(int i = 0; i < numShips; i++){
 			try{
-				System.out.println("Please enter the length of ship #"+(i+1)+":\n");
-				shipLengths[i] = in.nextInt();
-				if((shipLengths[i] > board1.getColumns() && shipLengths[i] > board1.getRows()) || shipLengths[i] < 1){
-					System.out.println("Ship length must be greater than 0 and not bigger than your board.");
+				System.out.println("Please enter the type of ship #"+(i+1)+":");
+				System.out.println("1.\tFrigate(2 spaces)\n2.\tDestroyer(3 spaces)\n3.\tBattle Cruiser(4 spaces)");
+				int shipType = in.nextInt();
+				if(shipType  < 0 || shipType > 3){
+					System.out.println("Ship Must be from selection above.");
 					i--;
+					continue;
+				}
+				else{
+					String shipTypeString = ((shipType == 1?"Frigate":(shipType == 2?"Destroyer":"Battlecruiser")));
+					ships1[i] = (Ship) shipFactory.createProduct(shipTypeString);
+					ships2[i] = (Ship) shipFactory.createProduct(shipTypeString);
 				}
 			}
 			catch(InputMismatchException e){
@@ -138,14 +153,14 @@ public class BattleshipGame {
 				System.out.println("Please enter an integer number.");
 			}
 		}
+		Ship[][] ships = {ships1, ships2};
 
 		int isVertical;
-		boolean isVerticalBoolean;
 		int column;
 		int row;
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < numShips; j++){
-				System.out.println("Which way will ship #"+(j+1)+" (length: "+shipLengths[j]+") for player "+(i+1)+" face:\n1.\tVertical\n2.\tHorizontal");
+				System.out.println("Which way will ship #"+(j+1)+" (length: "+ships1[j].length+") for player "+(i+1)+" face:\n1.\tVertical\n2.\tHorizontal");
 				try{
 					isVertical = in.nextInt();
 					isVertical -= 1;
@@ -154,7 +169,7 @@ public class BattleshipGame {
 						j--;
 						continue;
 					}
-					isVerticalBoolean = (isVertical==1?false:true);
+					ships[i][j].setIsVertical(isVertical==1?false:true);
 					System.out.println("Which column will this ship start in:");
 					column = in.nextInt();
 					if(column < 0 || column > boards[i].getColumns()-1){
@@ -169,9 +184,8 @@ public class BattleshipGame {
 						j--;
 						continue;
 					}
-					Coordinate coo = new Coordinate(column, row);
-
-					if(boards[i].addShip(new Ship(shipLengths[j],isVerticalBoolean, coo))){
+					ships[i][j].setCoordinate(new Coordinate(column, row));
+					if(boards[i].addShip(ships[i][j])){
 						System.out.println("Ship created successfully.");
 						boards[i].showSetupBoard();
 					}
@@ -215,7 +229,7 @@ public class BattleshipGame {
 				System.out.println("Invald column or row, please try again");
 				continue;
 			}
-			BattleshipBoard attackBoard = (player1Turn?board2:board1);
+			Board attackBoard = (player1Turn?board2:board1);
 			if(!attackBoard.strike(col, row)){
 				continue;
 			}

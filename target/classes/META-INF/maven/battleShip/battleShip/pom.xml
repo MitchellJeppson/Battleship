@@ -2,6 +2,25 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>battleShip</groupId>
   <artifactId>battleShip</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>submission</version>
   <name>battleShip</name>
+  <properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>battleship.BattleshipTest</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
