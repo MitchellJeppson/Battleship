@@ -9,6 +9,4 @@ public class Water extends BattleshipObject{
 	public void setHit(boolean isHit) {
 		this.hit = isHit;
 	}
-	
-	
 }

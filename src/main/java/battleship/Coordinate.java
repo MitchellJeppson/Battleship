@@ -4,6 +4,10 @@ public class Coordinate {
 	private int column;
 	private int row;
 	
+	/*
+	 * A coordinate specifies the head of the ship with a pair of values (column, row), 
+	 * ships always conintue downward or to the right from the coordinate position.
+	 */
 	public Coordinate(int column, int row){
 		this.column = column;
 		this.row = row;

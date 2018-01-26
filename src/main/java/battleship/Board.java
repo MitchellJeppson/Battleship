@@ -3,7 +3,7 @@ package battleship;
 public class Board {
 	private int columns;
 	private int rows;
-	private BattleshipObject[][] board;
+	BattleshipObject[][] board;
 
 	public Board(){
 		this.columns = 5;
@@ -26,17 +26,17 @@ public class Board {
 			}
 		}
 	}
-
+	/*
+	 * If a ship is able to be placed at its given coordinates then add it and return true, else return false and
+	 * do not add the ship.
+	 */
 	public boolean addShip(Ship ship){
-
 		if(!ship.getIsVertical()){
 			if(ship.getCoordinate().getColumn() + ship.getLength() > board.length){
-				System.out.println("Ship out of bounds: column "+(ship.getCoordinate().getColumn()+ship.getLength())+"/"+board.length);
 				return false;
 			}
 			for(int i = ship.getCoordinate().getColumn(); i < ship.getCoordinate().getColumn()+ship.getLength(); i++){
 				if(board[i][ship.getCoordinate().getRow()] instanceof Ship){
-					System.out.println("A ship is currently already stationed here: \n\tcol: "+i+"\n\trow: "+ship.getCoordinate().getRow());
 					return false;
 				}
 			}
@@ -47,12 +47,10 @@ public class Board {
 		}
 		else{
 			if(ship.getCoordinate().getRow() + ship.getLength() > board[0].length){
-				System.out.println("Ship out of bounds : row " + (ship.getCoordinate().getRow() + ship.getLength()) + "/" + board[0].length);
 				return false;
 			}
 			for(int i = ship.getCoordinate().getRow(); i < ship.getCoordinate().getRow()+ship.getLength(); i++){
 				if(board[ship.getCoordinate().getColumn()][i] instanceof Ship){
-					System.out.println("A ship is currently already stationed here: \n\tcol: "+ship.getCoordinate().getColumn()+"\n\trow: "+i);
 					return false;
 				}
 			}
@@ -80,32 +78,33 @@ public class Board {
 	}
 
 	public boolean strike(int column, int row){
-		if (board[column][row]  instanceof Water){
-			Water tile = ((Water) board[column][row]);
-			if(tile.isHit()){
+		BattleshipObject attackPosition = board[column][row];
+		if (attackPosition instanceof Water){
+			Water attackPositionWater = ((Water) attackPosition);
+			if(attackPositionWater.isHit()){
 				System.out.println("You have already attacked this space. Try again");
 				showBoard();
 				return false;
 			}
-			tile.setHit(true);
+			attackPositionWater.setHit(true);
 			showBoard();
 			return true;
 		}
-		Ship tile = ((Ship) board[column][row]);
+		Ship attackPositionShip = ((Ship) attackPosition);
 		int distanceFromStart;
-		if(tile.getIsVertical()){
-			distanceFromStart = row-tile.getCoordinate().getRow();
+		if(attackPositionShip.getIsVertical()){
+			distanceFromStart = row-attackPositionShip.getCoordinate().getRow();
 		}
 		else{
-			distanceFromStart = column-tile.getCoordinate().getColumn();
+			distanceFromStart = column-attackPositionShip.getCoordinate().getColumn();
 		}
-		if(tile.hitList.get(distanceFromStart)){
+		if(attackPositionShip.hitList.get(distanceFromStart)){
 			System.out.println("You have already attacked this space.Try again.");
 			showBoard();
 			return false;
 		}
-		tile.hitList.set(distanceFromStart, true);
-		if(!tile.hitList.contains(false)){
+		attackPositionShip.hitList.set(distanceFromStart, true);
+		if(!attackPositionShip.hitList.contains(false)){
 			System.out.println("You have killed an enemy ship!");
 		}
 		else{
@@ -117,8 +116,7 @@ public class Board {
 	}
 
 	public void showBoard(){
-
-		for(int i = 0; i < board.length; i++){
+		for(int i = 0; i < board.length; i++){ //Numbering is not great, shifts depending on the size of board...
 			System.out.print("\t"+i+"\t");
 		}
 
@@ -155,9 +153,10 @@ public class Board {
 			System.out.println();
 		}
 	}
+	
 
 	public void showSetupBoard(){
-		for(int i = 0; i < board.length; i++){
+		for(int i = 0; i < board.length; i++){  //Numbering is not great, shifts depending on the size of board...
 			System.out.print("\t"+i+"\t");
 		}
 

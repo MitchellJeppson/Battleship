@@ -27,7 +27,6 @@ public class BattleshipFactory {
 		}
 
 		return null;
-		
 	}
 
 
